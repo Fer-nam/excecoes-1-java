@@ -5,21 +5,17 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Reservation {
+
 	private Integer roomNumber;
 	private Date checkIn;
-	private Date CheckOut;
+	private Date checkOut;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public Reservation() {
-		
-	}
-
 	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
-
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
-		CheckOut = checkOut;
+		this.checkOut = checkOut;
 	}
 
 	public Integer getRoomNumber() {
@@ -34,32 +30,38 @@ public class Reservation {
 		return checkIn;
 	}
 
-	
 	public Date getCheckOut() {
-		return CheckOut;
+		return checkOut;
 	}
 
 	public long duration() {
-		long diff = CheckOut.getTime() - checkIn.getTime();
-		return TimeUnit.DAYS.convert(diff,TimeUnit.MILLISECONDS);
-				
+		long diff = checkOut.getTime() - checkIn.getTime();
+		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public void updateDates(Date checkIn, Date checkOut) {
+	public String updateDates(Date checkIn, Date checkOut) {
+		Date now = new Date();
+		if (checkIn.before(now) || checkOut.before(now)) {
+			return "Data de reserva precisam ser datas futuras!";
+		}
+		if (!checkOut.after(checkIn)) {
+			return "Erro na reserva: A data de check-Out precisa ser depois da data de check-in!";
+		}
 		this.checkIn = checkIn;
-		this.CheckOut = checkOut;
+		this.checkOut = checkOut;
+		return null;
 	}
 	
 	@Override
 	public String toString() {
-		return "Quarto Nº: "
-				+roomNumber
-				+", check-in em "
-				+ sdf.format(checkIn)
-				+", check-out em "
-				+sdf.format(CheckOut)
-				+", "
-				+duration()
-				+" noites";
+		return "Room "
+			+ roomNumber
+			+ ", check-in: "
+			+ sdf.format(checkIn)
+			+ ", check-out: "
+			+ sdf.format(checkOut)
+			+ ", "
+			+ duration()
+			+ " nights";
 	}
 }
